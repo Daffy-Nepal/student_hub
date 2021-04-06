@@ -18,11 +18,15 @@ def feedbacks(request):
 
 def create_feedback(request):
     if request.method == "POST":
-        title = request.POST.get('title')
-        description = request.POST.get('description')
-        user = request.user
-        feedback = Feedback(author=user, title=title, description=description)
-        feedback.save()
-        feedback_list = list(Feedback.objects.filter(
-            author_id=request.user.id).values())
-        return JsonResponse({'feedback_list': feedback_list})
+        form = FeedBackForm(request.POST)
+        if form.is_valid():
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            user = request.user
+            feedback = Feedback(author=user, title=title,
+                                description=description)
+            feedback.save()
+            feedback_list = list(Feedback.objects.filter(
+                author_id=request.user.id).values())
+            return JsonResponse({'feedback_list': feedback_list})
+        return JsonResponse({'status': 'Error'})
