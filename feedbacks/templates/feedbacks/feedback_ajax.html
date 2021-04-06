@@ -1,16 +1,18 @@
 <script>
+  //Create and Display Feedbacks
   $(document).ready(function () {
     $("#feedBackSave").click(function () {
       output = "";
+      var feedbackId = $("#feedbackId").val();
       let title = $("#titleId").val();
       let description = $("#descriptionId").val();
       let csrf = $("input[name=csrfmiddlewaretoken]").val();
       // console.log(title, description, csrf);
-      //Validation here at the end
       $.ajax({
         url: "{% url 'create_feedback' %}",
         method: "POST",
         data: {
+          feedbackId: feedbackId,
           title: title,
           description: description,
           csrfmiddlewaretoken: csrf,
@@ -19,6 +21,7 @@
           if (json.status == "Error") {
             swal("Oops", "Cannot Send Empty Feedback", "error");
           } else {
+            swal("Success", "You Feedback has been received!", "success");
             response = json.feedback_list;
             for (i = 0; i < response.length; i++) {
               output +=
@@ -33,8 +36,71 @@
                 "><i class='far fa-trash-alt fa-lg'></i></a></td></tr>";
             }
             $("#tBody").html(output);
+            $("#feedbackId").val("");
             $("form")[0].reset();
           }
+        },
+      });
+    });
+  });
+
+  // Delete Feedbacks
+  $(document).ready(function () {
+    $("tBody").on("click", ".btn-delete", function () {
+      here = this;
+      let id = $(this).attr("data");
+      let csrf = $("input[name=csrfmiddlewaretoken]").val();
+      swal({
+        title: "Are you sure?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+      }).then((willDelete) => {
+        if (willDelete) {
+          $.ajax({
+            url: "{% url 'delete_feedback' %}",
+            method: "POST",
+            data: {
+              feedback_id: id,
+              csrfmiddlewaretoken: csrf,
+            },
+            success: function (data) {
+              if (data.status == "Success") {
+                $(here).closest("tr").fadeOut();
+              }
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+              swal("Error deleting!", "Please try again", "error");
+            },
+          });
+          swal("Poof! Your Feedback has been deleted!", {
+            icon: "success",
+          });
+        } else {
+          swal("Your Feedback is safe!");
+        }
+      });
+    });
+  });
+
+  //Update Feedback
+  $(document).ready(function () {
+    $("tbody").on("click", ".btn-edit", function () {
+      let id = $(this).attr("data");
+      let csrf = $("input[name=csrfmiddlewaretoken]").val();
+      //console.log(id, csrf);
+      $.ajax({
+        url: "{% url 'update_feedback' %}",
+        method: "POST",
+        dataType: "json",
+        data: {
+          feedback_id: id,
+          csrfmiddlewaretoken: csrf,
+        },
+        success: function (data) {
+          $("#feedbackId").val(data.id);
+          $("#titleId").val(data.title);
+          $("#descriptionId").val(data.description);
         },
       });
     });

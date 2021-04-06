@@ -7,6 +7,7 @@
       <div class="col-md-4">
         <h4>Provide Feedback</h4>
         <form action="" method="POST" name="feedbackForm">
+          <input type="hidden" id="feedbackId" />
           {% csrf_token %} {{form|crispy}}
           <input
             class="btn btn-info"
