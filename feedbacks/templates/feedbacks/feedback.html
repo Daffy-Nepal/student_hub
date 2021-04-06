@@ -1,0 +1,60 @@
+{% extends 'base.html' %} {% load crispy_forms_tags %}
+<!-- Start of content block -->
+{% block content %}
+<div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h4>Provide Feedback</h4>
+        <form action="" method="POST" name="feedbackForm">
+          {% csrf_token %} {{form|crispy}}
+          <input
+            class="btn btn-info"
+            id="feedBackSave"
+            type="button"
+            value="Save"
+          />
+        </form>
+      </div>
+      <!-- Start of Table to display Feedback -->
+      <div class="col-md-8">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Title</th>
+              <th scope="col">Description</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="tBody">
+            {% for feedback in feedbacks %}
+            <tr>
+              <td>{{feedback.title}}</td>
+              <td>{{ feedback.description }}</td>
+              <td>
+                <a
+                  class="text-info btn-edit pr-2"
+                  type="button"
+                  data="{{feedback.id}}"
+                  ><i class="far fa-edit fa-lg"></i
+                ></a>
+                <a
+                  class="text-danger btn-delete"
+                  type="button"
+                  data="{{feedback.id}}"
+                  ><i class="far fa-trash-alt fa-lg"></i
+                ></a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+<!-- Start of scripts block -->
+{% block scripts %}
+<!-- Using the ajax html file -->
+{% include 'feedbacks/feedback_ajax.html' %} {% endblock scripts %}

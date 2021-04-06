@@ -1,0 +1,45 @@
+<script>
+  $(document).ready(function () {
+    $("#feedBackSave").click(function () {
+      output = "";
+      let title = $("#titleId").val();
+      let description = $("#descriptionId").val();
+      let csrf = $("input[name=csrfmiddlewaretoken]").val();
+      // console.log(title, description, csrf);
+      //Validation here at the end
+      $.ajax({
+        url: "{% url 'create_feedback' %}",
+        method: "POST",
+        data: {
+          title: title,
+          description: description,
+          csrfmiddlewaretoken: csrf,
+        },
+        success: function (json) {
+          response = json.feedback_list;
+          for (i = 0; i < response.length; i++) {
+            output +=
+              "<tr><td>" +
+              response[i].title +
+              "</td><td>" +
+              response[i].description +
+              " </td><td><a class='text-info btn-edit pr-2' type='button' data=" +
+              response[i].id +
+              "><i class='far fa-edit fa-lg'></i></a> <a class='text-danger btn-delete' type='button' data=" +
+              response[i].id +
+              "><i class='far fa-trash-alt fa-lg'></i></a></td></tr>";
+          }
+          $("#tBody").html(output);
+          $("form")[0].reset();
+        },
+      });
+    });
+  });
+</script>
+
+{% comment %} $("form[name=feedbackForm]").validate({ rules: { title: {
+required: true, minlength: 5, }, description: { required: true, minlength: 10,
+}, }, messages: { title: { required: "Please enter a title", minlength: "Make
+Sure Title is more than 5 characters", }, description: { required: "Please enter
+a description", minlength: "Make Sure Title is more than 10 characters", }, },
+}); {% endcomment %}

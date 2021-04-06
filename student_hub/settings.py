@@ -50,10 +50,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Required apps for All Auth
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # Providers that we want to enable
+    'allauth.socialaccount.providers.google',
+    # Other installed packages
     'crispy_forms',
     'ckeditor',
-    'django_cleanup',  # should be after the apps if order for it to work
+    # should be after the apps if order for it to work
+    'django_cleanup',
+
 ]
+# Site id used for all auth
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,6 +108,17 @@ DATABASES = {
     }
 }
 
+# Kept For Allauth's Authentication backends
+# https://django-allauth.readthedocs.io/en/latest/installation.html
+AUTHENTICATION_BACKENDS = [
+
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
+
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators

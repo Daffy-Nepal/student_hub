@@ -20,10 +20,12 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('accounts/', include('allauth.urls')),
     path('', include('questions.urls')),
     path('events/', include('events.urls')),
     path('', include('users.urls')),
     path('', include('notes.urls')),
+    path('feedbacks/', include('feedbacks.urls'))
 ]
 if (settings.DEBUG):
     urlpatterns += static(settings.STATIC_URL,
